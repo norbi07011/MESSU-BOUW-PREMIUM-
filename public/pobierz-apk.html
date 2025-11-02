@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pobierz MESSU BOUW na Androida</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: white;
+        }
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .version {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .download-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+        }
+        .download-btn:active {
+            transform: translateY(0);
+        }
+        .size-info {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+        .instructions {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .instructions h2 {
+            color: #2d3748;
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .instructions h2::before {
+            content: "📱";
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        .step {
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+        }
+        .step::before {
+            content: attr(data-step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .step p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 5px;
+        }
+        .step code {
+            background: #e2e8f0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #2d3748;
+        }
+        .warning {
+            background: #fff5e1;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .warning::before {
+            content: "⚠️ ";
+            font-size: 18px;
+        }
+        .warning p {
+            color: #92400e;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .features {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .feature {
+            text-align: center;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+        }
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        .feature-text {
+            font-size: 13px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            .download-btn {
+                padding: 18px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">📋</div>
+        <h1>MESSU BOUW</h1>
+        <p class="version">Wersja 1.0 - Aplikacja Android</p>
+        
+        <a href="messu-bouw.apk" class="download-btn" download="MESSU-BOUW.apk">
+            ⬇️ Pobierz aplikację (4.5 MB)
+        </a>
+        
+        <p class="size-info">Rozmiar: 4.5 MB | Wymaga: Android 7.0+</p>
+        
+        <div class="instructions">
+            <h2>Jak zainstalować</h2>
+            
+            <div class="step" data-step="1">
+                <p><strong>Pobierz APK</strong></p>
+                <p>Kliknij przycisk powyżej aby pobrać plik aplikacji na telefon</p>
+            </div>
+            
+            <div class="step" data-step="2">
+                <p><strong>Włącz instalację z nieznanych źródeł</strong></p>
+                <p>Przejdź do: <code>Ustawienia → Bezpieczeństwo → Nieznane źródła</code></p>
+                <p>lub: <code>Ustawienia → Aplikacje → Dostęp specjalny → Instaluj nieznane aplikacje</code></p>
+            </div>
+            
+            <div class="step" data-step="3">
+                <p><strong>Otwórz pobrany plik</strong></p>
+                <p>Znajdź plik <code>MESSU-BOUW.apk</code> w folderze Pobrane i kliknij na niego</p>
+            </div>
+            
+            <div class="step" data-step="4">
+                <p><strong>Zainstaluj aplikację</strong></p>
+                <p>Postępuj zgodnie z instrukcjami na ekranie i kliknij "Zainstaluj"</p>
+            </div>
+            
+            <div class="step" data-step="5">
+                <p><strong>Gotowe!</strong></p>
+                <p>Aplikacja będzie działać offline - nie wymaga internetu do pracy</p>
+            </div>
+            
+            <div class="warning">
+                <p><strong>Bezpieczeństwo:</strong> To jest oficjalna aplikacja MESSU BOUW zbudowana bezpośrednio z kodu źródłowego. Jest całkowicie bezpieczna i nie zawiera żadnych wirusów ani złośliwego oprogramowania.</p>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📱</div>
+                <div class="feature-text">Działa offline</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💾</div>
+                <div class="feature-text">Lokalna baza danych</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-text">Szybka wydajność</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <div class="feature-text">100% bezpieczna</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
