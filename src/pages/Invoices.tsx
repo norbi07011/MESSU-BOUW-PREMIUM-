@@ -1,12 +1,13 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInvoices, useClients, useCompany } from '@/hooks/useElectronDB';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { Plus, FileText, DownloadSimple, CheckCircle, FilePdf, FileCsv, FileCode, FileXls, Trash, PencilSimple, Eye, EnvelopeSimple } from '@phosphor-icons/react';
+import { Plus, FileText, DownloadSimple, CheckCircle, FilePdf, FileCsv, FileCode, FileXls, Trash, PencilSimple, Eye, EnvelopeSimple, DotsThree } from '@phosphor-icons/react';
 import { Invoice, Client, Company } from '@/types';
 import { formatCurrency, formatDate } from '@/lib/invoice-utils';
 import { toast } from 'sonner';
@@ -25,6 +26,7 @@ export default function Invoices({ onNavigate }: InvoicesProps) {
   const { company, loading: companyLoading } = useCompany();
   const [selectedTemplateId] = useState('classic');
   const [viewInvoice, setViewInvoice] = useState<Invoice | null>(null);
+  const isMobile = useIsMobile();
 
   const sortedInvoices = useMemo(() => {
     return (invoices || []).sort((a, b) =>
@@ -266,6 +268,150 @@ ${company.name}`;
                 </button>
               </div>
             ) : (
+              <>
+                {/* Widok mobilny - karty */}
+                {isMobile ? (
+                  <div className="space-y-4">
+                    {sortedInvoices.map((invoice) => {
+                      const client = clients?.find(c => c.id === invoice.client_id);
+                      return (
+                        <Card key={invoice.id} className="overflow-hidden border-2 hover:border-indigo-300 transition-all">
+                          <CardContent className="p-4">
+                            {/* Nagłówek karty */}
+                            <div className="flex justify-between items-start mb-3">
+                              <div className="flex-1">
+                                <p className="text-xs text-gray-500 mb-1">Numer faktury</p>
+                                <p className="font-mono font-bold text-lg text-gray-900">{invoice.invoice_number}</p>
+                              </div>
+                              <div>
+                                {getStatusBadge(invoice.status)}
+                              </div>
+                            </div>
+
+                            {/* Klient */}
+                            <div className="mb-3">
+                              <p className="text-xs text-gray-500 mb-1">Klient</p>
+                              <p className="font-medium text-gray-800">{client?.name || 'Nieznany'}</p>
+                            </div>
+
+                            {/* Daty w dwóch kolumnach */}
+                            <div className="grid grid-cols-2 gap-3 mb-3">
+                              <div>
+                                <p className="text-xs text-gray-500 mb-1">Data wystawienia</p>
+                                <p className="text-sm font-mono text-gray-700">{formatDate(invoice.issue_date, i18n.language)}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-gray-500 mb-1">Termin płatności</p>
+                                <p className="text-sm font-mono text-gray-700">{formatDate(invoice.due_date, i18n.language)}</p>
+                              </div>
+                            </div>
+
+                            {/* Kwota - wyróżniona */}
+                            <div className="bg-indigo-50 rounded-lg p-3 mb-3">
+                              <p className="text-xs text-indigo-600 mb-1">Kwota brutto</p>
+                              <p className="text-2xl font-bold text-indigo-700">{formatCurrency(invoice.total_gross, i18n.language)}</p>
+                            </div>
+
+                            {/* Przyciski akcji */}
+                            <div className="grid grid-cols-2 gap-2">
+                              {/* Podgląd */}
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={() => handleViewInvoice(invoice)}
+                                    className="w-full"
+                                  >
+                                    <Eye className="mr-2 pointer-events-none" size={16} />
+                                    Podgląd
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-[95vw] max-h-[85vh] overflow-y-auto">
+                                  <DialogHeader>
+                                    <DialogTitle>Faktura {invoice.invoice_number}</DialogTitle>
+                                    <DialogDescription>{client?.name}</DialogDescription>
+                                  </DialogHeader>
+                                  {viewInvoice && (
+                                    <div className="space-y-4 text-sm">
+                                      <div className="grid grid-cols-2 gap-3">
+                                        <div>
+                                          <p className="font-semibold text-gray-600">Data wystawienia</p>
+                                          <p>{formatDate(viewInvoice.issue_date, i18n.language)}</p>
+                                        </div>
+                                        <div>
+                                          <p className="font-semibold text-gray-600">Termin płatności</p>
+                                          <p>{formatDate(viewInvoice.due_date, i18n.language)}</p>
+                                        </div>
+                                      </div>
+                                      <div>
+                                        <p className="font-semibold text-gray-600 mb-2">Pozycje</p>
+                                        <div className="space-y-2">
+                                          {viewInvoice.lines.map((line, idx) => (
+                                            <div key={idx} className="bg-gray-50 p-2 rounded">
+                                              <p className="font-medium">{line.description}</p>
+                                              <p className="text-xs text-gray-600">
+                                                {line.quantity} × {formatCurrency(line.unit_price, i18n.language)} = {formatCurrency(line.unit_price * line.quantity, i18n.language)}
+                                              </p>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </div>
+                                      <div className="border-t pt-3">
+                                        <div className="flex justify-between font-bold text-lg">
+                                          <span>Razem brutto:</span>
+                                          <span>{formatCurrency(viewInvoice.total_gross, i18n.language)}</span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                </DialogContent>
+                              </Dialog>
+
+                              {/* Menu więcej opcji */}
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="outline" size="sm" className="w-full">
+                                    <DotsThree className="mr-2 pointer-events-none" size={20} weight="bold" />
+                                    Więcej
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-48">
+                                  <DropdownMenuItem onClick={() => handleEditInvoice(invoice)}>
+                                    <PencilSimple className="mr-2 pointer-events-none" size={16} />
+                                    Edytuj
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => handleGeneratePDF(invoice)}>
+                                    <FilePdf className="mr-2 pointer-events-none" size={16} />
+                                    Pobierz PDF
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => handleSendEmail(invoice)}>
+                                    <EnvelopeSimple className="mr-2 pointer-events-none" size={16} />
+                                    Wyślij email
+                                  </DropdownMenuItem>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem onClick={() => handleMarkPaid(invoice)}>
+                                    <CheckCircle className="mr-2 pointer-events-none" size={16} />
+                                    Oznacz jako opłacone
+                                  </DropdownMenuItem>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem 
+                                    onClick={() => handleDeleteInvoice(invoice)}
+                                    className="text-red-600 focus:text-red-600"
+                                  >
+                                    <Trash className="mr-2 pointer-events-none" size={16} />
+                                    Usuń
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  /* Widok desktopowy - tabela */
               <div className="overflow-x-auto">
                 <div className="min-w-full">
                   {/* Modern Table Header */}
@@ -474,6 +620,8 @@ ${company.name}`;
                   </div>
                 </div>
               </div>
+                )}
+              </>
             )}
           </div>
         </div>

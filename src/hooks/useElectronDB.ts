@@ -1,8 +1,34 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Preferences } from '@capacitor/preferences';
+import { Capacitor } from '@capacitor/core';
 
 // Sprawdź czy działamy w Electron
 const isElectron = () => {
   return typeof window !== 'undefined' && window.electronAPI?.isElectron;
+};
+
+// Sprawdź czy działamy na urządzeniu mobilnym (Capacitor)
+const isMobile = () => {
+  return Capacitor.isNativePlatform();
+};
+
+// Uniwersalna funkcja do odczytu z storage
+const getStorageItem = async (key: string): Promise<string | null> => {
+  if (isMobile()) {
+    const { value } = await Preferences.get({ key });
+    return value;
+  } else {
+    return localStorage.getItem(key);
+  }
+};
+
+// Uniwersalna funkcja do zapisu do storage
+const setStorageItem = async (key: string, value: string): Promise<void> => {
+  if (isMobile()) {
+    await Preferences.set({ key, value });
+  } else {
+    localStorage.setItem(key, value);
+  }
 };
 
 // Mock storage dla fallback gdy nie ma Electron
@@ -60,8 +86,20 @@ export function useElectronDB<T>(
         }
         
         setData(result || defaultValue);
+      } else if (isMobile()) {
+        // Użyj Capacitor Preferences na urządzeniach mobilnych
+        const { value } = await Preferences.get({ key });
+        if (value) {
+          try {
+            setData(JSON.parse(value));
+          } catch {
+            setData(defaultValue);
+          }
+        } else {
+          setData(defaultValue);
+        }
       } else {
-        // Fallback na localStorage gdy nie ma Electron
+        // Fallback na localStorage w przeglądarce
         const stored = localStorage.getItem(key);
         if (stored) {
           try {
@@ -96,8 +134,14 @@ export function useElectronDB<T>(
           default:
             console.warn(`Direct update not supported for ${entityType}, use specific CRUD functions`);
         }
+      } else if (isMobile()) {
+        // Użyj Capacitor Preferences na urządzeniach mobilnych
+        await Preferences.set({
+          key,
+          value: JSON.stringify(newValue)
+        });
       } else {
-        // Fallback na localStorage
+        // Fallback na localStorage w przeglądarce
         localStorage.setItem(key, JSON.stringify(newValue));
       }
       
@@ -127,6 +171,10 @@ export function useInvoices() {
       if (isElectron() && window.electronAPI) {
         const result = await window.electronAPI.database.getInvoices();
         setInvoices(result || []);
+      } else if (isMobile()) {
+        // Użyj Capacitor Preferences na urządzeniach mobilnych
+        const { value } = await Preferences.get({ key: 'invoices' });
+        setInvoices(value ? JSON.parse(value) : []);
       } else {
         // Fallback na localStorage
         const stored = localStorage.getItem('invoices');
@@ -146,6 +194,15 @@ export function useInvoices() {
         const result = await window.electronAPI.database.createInvoice(invoice);
         await fetchInvoices(); // Odśwież listę
         return result;
+      } else if (isMobile()) {
+        // Użyj Capacitor Preferences na urządzeniach mobilnych
+        const { value } = await Preferences.get({ key: 'invoices' });
+        const invoices = value ? JSON.parse(value) : [];
+        const newInvoice = { ...invoice, id: Date.now().toString() };
+        const updated = [...invoices, newInvoice];
+        await Preferences.set({ key: 'invoices', value: JSON.stringify(updated) });
+        await fetchInvoices();
+        return newInvoice;
       } else {
         // Fallback na localStorage
         const stored = localStorage.getItem('invoices');
@@ -168,6 +225,14 @@ export function useInvoices() {
         const result = await window.electronAPI.database.updateInvoice(id, invoice);
         await fetchInvoices();
         return result;
+      } else if (isMobile()) {
+        // Użyj Capacitor Preferences na urządzeniach mobilnych
+        const { value } = await Preferences.get({ key: 'invoices' });
+        const invoices = value ? JSON.parse(value) : [];
+        const updated = invoices.map((inv: any) => inv.id === id ? { ...inv, ...invoice } : inv);
+        await Preferences.set({ key: 'invoices', value: JSON.stringify(updated) });
+        await fetchInvoices();
+        return invoice;
       } else {
         // Fallback na localStorage
         const stored = localStorage.getItem('invoices');
@@ -189,6 +254,14 @@ export function useInvoices() {
         const result = await window.electronAPI.database.deleteInvoice(id);
         await fetchInvoices();
         return result;
+      } else if (isMobile()) {
+        // Użyj Capacitor Preferences na urządzeniach mobilnych
+        const { value } = await Preferences.get({ key: 'invoices' });
+        const invoices = value ? JSON.parse(value) : [];
+        const updated = invoices.filter((inv: any) => inv.id !== id);
+        await Preferences.set({ key: 'invoices', value: JSON.stringify(updated) });
+        await fetchInvoices();
+        return true;
       } else {
         // Fallback na localStorage
         const stored = localStorage.getItem('invoices');
@@ -230,7 +303,7 @@ export function useClients() {
         const result = await window.electronAPI.database.getClients();
         setClients(result || []);
       } else {
-        const stored = localStorage.getItem('clients');
+        const stored = await getStorageItem('clients');
         setClients(stored ? JSON.parse(stored) : []);
       }
     } catch (error) {
@@ -248,11 +321,11 @@ export function useClients() {
         await fetchClients();
         return result;
       } else {
-        const stored = localStorage.getItem('clients');
+        const stored = await getStorageItem('clients');
         const clients = stored ? JSON.parse(stored) : [];
         const newClient = { ...client, id: Date.now().toString() };
         const updated = [...clients, newClient];
-        localStorage.setItem('clients', JSON.stringify(updated));
+        await setStorageItem('clients', JSON.stringify(updated));
         await fetchClients();
         return newClient;
       }
@@ -269,10 +342,10 @@ export function useClients() {
         await fetchClients();
         return result;
       } else {
-        const stored = localStorage.getItem('clients');
+        const stored = await getStorageItem('clients');
         const clients = stored ? JSON.parse(stored) : [];
         const updated = clients.map((cli: any) => cli.id === id ? { ...cli, ...client } : cli);
-        localStorage.setItem('clients', JSON.stringify(updated));
+        await setStorageItem('clients', JSON.stringify(updated));
         await fetchClients();
         return client;
       }
@@ -289,10 +362,10 @@ export function useClients() {
         await fetchClients();
         return result;
       } else {
-        const stored = localStorage.getItem('clients');
+        const stored = await getStorageItem('clients');
         const clients = stored ? JSON.parse(stored) : [];
         const updated = clients.filter((cli: any) => cli.id !== id);
-        localStorage.setItem('clients', JSON.stringify(updated));
+        await setStorageItem('clients', JSON.stringify(updated));
         await fetchClients();
         return true;
       }
@@ -328,7 +401,7 @@ export function useProducts() {
         const result = await window.electronAPI.database.getProducts();
         setProducts(result || []);
       } else {
-        const stored = localStorage.getItem('products');
+        const stored = await getStorageItem('products');
         setProducts(stored ? JSON.parse(stored) : []);
       }
     } catch (error) {
@@ -346,11 +419,11 @@ export function useProducts() {
         await fetchProducts();
         return result;
       } else {
-        const stored = localStorage.getItem('products');
+        const stored = await getStorageItem('products');
         const products = stored ? JSON.parse(stored) : [];
         const newProduct = { ...product, id: Date.now().toString() };
         const updated = [...products, newProduct];
-        localStorage.setItem('products', JSON.stringify(updated));
+        await setStorageItem('products', JSON.stringify(updated));
         await fetchProducts();
         return newProduct;
       }
@@ -367,10 +440,10 @@ export function useProducts() {
         await fetchProducts();
         return result;
       } else {
-        const stored = localStorage.getItem('products');
+        const stored = await getStorageItem('products');
         const products = stored ? JSON.parse(stored) : [];
         const updated = products.map((prod: any) => prod.id === id ? { ...prod, ...product } : prod);
-        localStorage.setItem('products', JSON.stringify(updated));
+        await setStorageItem('products', JSON.stringify(updated));
         await fetchProducts();
         return product;
       }
@@ -387,10 +460,10 @@ export function useProducts() {
         await fetchProducts();
         return result;
       } else {
-        const stored = localStorage.getItem('products');
+        const stored = await getStorageItem('products');
         const products = stored ? JSON.parse(stored) : [];
         const updated = products.filter((prod: any) => prod.id !== id);
-        localStorage.setItem('products', JSON.stringify(updated));
+        await setStorageItem('products', JSON.stringify(updated));
         await fetchProducts();
         return true;
       }
@@ -426,7 +499,7 @@ export function useCompany() {
         const result = await window.electronAPI.database.getCompany();
         setCompany(result);
       } else {
-        const stored = localStorage.getItem('company');
+        const stored = await getStorageItem('company');
         setCompany(stored ? JSON.parse(stored) : null);
       }
     } catch (error) {
@@ -444,7 +517,7 @@ export function useCompany() {
         setCompany(result);
         return result;
       } else {
-        localStorage.setItem('company', JSON.stringify(companyData));
+        await setStorageItem('company', JSON.stringify(companyData));
         setCompany(companyData);
         return companyData;
       }
