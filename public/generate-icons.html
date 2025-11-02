@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate PWA Icons</title>
+</head>
+<body>
+    <h2>Generowanie ikon...</h2>
+    <canvas id="canvas"></canvas>
+    <script>
+        const sizes = [57, 60, 72, 76, 96, 114, 120, 128, 144, 152, 180, 192, 384, 512];
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = function() {
+            sizes.forEach(size => {
+                canvas.width = size;
+                canvas.height = size;
+                
+                // Tło białe
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, size, size);
+                
+                // Rysuj logo (15% padding)
+                const padding = size * 0.15;
+                ctx.drawImage(img, padding, padding, size - 2*padding, size - 2*padding);
+                
+                // Download
+                const link = document.createElement('a');
+                link.download = `icon-${size}x${size}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+            
+            document.body.innerHTML = '<h2>✅ Ikony wygenerowane! Sprawdź folder Downloads i przenieś do folderu /public/</h2>';
+        };
+        
+        img.src = '/messu-bouw-logo.jpg';
+    </script>
+</body>
+</html>
+

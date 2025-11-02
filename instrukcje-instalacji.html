@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NORBS Fakturowanie - Instrukcje Instalacji</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .qr-code {
+            text-align: center;
+            margin: 30px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+        .platform {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #00ff88;
+        }
+        .step {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 3px solid #4CAF50;
+        }
+        .qr-placeholder {
+            width: 200px; 
+            height: 200px; 
+            background: #f0f0f0; 
+            border: 2px dashed #ccc; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #666; 
+            font-weight: bold;
+            margin: 0 auto;
+        }
+        .center-text {
+            text-align: center;
+        }
+        .footer-text {
+            text-align: center; 
+            margin-top: 40px; 
+            font-size: 18px;
+        }
+        h1 { color: #fff; text-align: center; margin-bottom: 30px; }
+        h2 { color: #00ff88; margin-top: 30px; }
+        h3 { color: #ffeb3b; }
+        .url { 
+            background: rgba(0, 0, 0, 0.3); 
+            padding: 10px; 
+            border-radius: 8px; 
+            font-family: monospace; 
+            font-size: 18px;
+            text-align: center;
+            margin: 15px 0;
+            word-break: break-all;
+        }
+        .icon { font-size: 24px; margin-right: 10px; }
+        .warning {
+            background: rgba(255, 152, 0, 0.2);
+            border: 1px solid #ff9800;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 NORBS Fakturowanie - Instrukcje Instalacji</h1>
+        
+        <div class="center-text">
+            <div class="qr-code">
+                <!-- QR Code będzie wygenerowany przez aplikację -->
+                <div class="qr-placeholder">
+                    QR CODE<br>
+                    192.168.178.75:5002
+                </div>
+            </div>
+            
+            <div class="url">
+                <strong>Adres WWW:</strong><br>
+                http://192.168.178.75:5002/
+            </div>
+        </div>
+
+        <div class="warning">
+            <h3>⚠️ Ważne Informacje</h3>
+            <p><strong>• Lokalne zapisywanie:</strong> Wszystkie dane zapisują się lokalnie w przeglądarce</p>
+            <p><strong>• Offline dostępność:</strong> Aplikacja działa bez internetu po instalacji</p>
+            <p><strong>• Brak synchronizacji:</strong> Dane na telefonie ≠ dane na komputerze</p>
+        </div>
+
+        <h2>📱 Instalacja na telefonie (PWA)</h2>
+        
+        <div class="platform">
+            <h3>🍎 iPhone/iPad (Safari)</h3>
+            <div class="step">
+                <span class="icon">1️⃣</span> Otwórz Safari i wejdź na adres powyżej
+            </div>
+            <div class="step">
+                <span class="icon">2️⃣</span> Kliknij przycisk "Udostępnij" (kwadrat ze strzałką)
+            </div>
+            <div class="step">
+                <span class="icon">3️⃣</span> Przewiń w dół i wybierz "Dodaj do ekranu głównego"
+            </div>
+            <div class="step">
+                <span class="icon">4️⃣</span> Potwierdź nazwę "NORBS Faktur" i kliknij "Dodaj"
+            </div>
+            <div class="step">
+                <span class="icon">✅</span> Aplikacja pojawi się na ekranie głównym jak natywna app!
+            </div>
+        </div>
+
+        <div class="platform">
+            <h3>🤖 Android (Chrome/Firefox)</h3>
+            <div class="step">
+                <span class="icon">1️⃣</span> Otwórz Chrome i wejdź na adres powyżej
+            </div>
+            <div class="step">
+                <span class="icon">2️⃣</span> Zobaczysz banner "Dodaj do ekranu głównego" - kliknij
+            </div>
+            <div class="step">
+                <span class="icon">3️⃣</span> LUB kliknij menu (3 kropki) → "Dodaj do ekranu głównego"
+            </div>
+            <div class="step">
+                <span class="icon">4️⃣</span> Potwierdź instalację
+            </div>
+            <div class="step">
+                <span class="icon">✅</span> Aplikacja pojawi się w menu aplikacji!
+            </div>
+        </div>
+
+        <h2>💻 Wersja Desktop</h2>
+        
+        <div class="platform">
+            <h3>🖥️ Windows Desktop App</h3>
+            <div class="step">
+                <span class="icon">📦</span> <strong>Pobierz:</strong> NORBS-Fakturowanie-Installer.zip (532MB)
+            </div>
+            <div class="step">
+                <span class="icon">📁</span> <strong>Rozpakuj:</strong> Folder z aplikacją i instalatorem
+            </div>
+            <div class="step">
+                <span class="icon">🚀</span> <strong>Uruchom:</strong> start-norbs.bat lub norbs-service-faktur.exe
+            </div>
+            <div class="step">
+                <span class="icon">💾</span> <strong>Baza danych:</strong> SQLite lokalnie w AppData
+            </div>
+        </div>
+
+        <h2>🔧 Funkcje</h2>
+        <div class="platform">
+            <div class="step">
+                <span class="icon">📄</span> <strong>Faktury:</strong> Tworzenie, edycja, PDF export
+            </div>
+            <div class="step">
+                <span class="icon">👥</span> <strong>Klienci:</strong> Zarządzanie bazą klientów
+            </div>
+            <div class="step">
+                <span class="icon">📦</span> <strong>Produkty:</strong> Katalog produktów/usług
+            </div>
+            <div class="step">
+                <span class="icon">📊</span> <strong>Raporty:</strong> Analizy sprzedaży
+            </div>
+            <div class="step">
+                <span class="icon">💼</span> <strong>Firma:</strong> Konfiguracja danych firmy
+            </div>
+        </div>
+
+        <p class="footer-text">
+            <strong>🎉 Gotowe! Aplikacja działa offline na wszystkich platformach!</strong>
+        </p>
+    </div>
+</body>
+</html>

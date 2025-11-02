@@ -1,0 +1,33 @@
+/* Select dropdown override - bardzo kontrastowe style */
+[data-slot="select-content"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #333333 !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-slot="select-item"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+[data-slot="select-item"]:hover {
+  background-color: #e0e7ff !important;
+  color: #000000 !important;
+}
+
+[data-slot="select-item"]:focus {
+  background-color: #c7d2fe !important;
+  color: #000000 !important;
+}
+
+/* SelectTrigger override */
+[data-slot="select-trigger"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+[data-slot="select-trigger"]:hover {
+  background-color: #f9fafb !important;
+}

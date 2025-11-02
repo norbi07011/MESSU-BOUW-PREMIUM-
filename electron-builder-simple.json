@@ -1,0 +1,28 @@
+{
+  "appId": "com.messubouw.fakturowanie",
+  "productName": "MESSU BOUW",
+  "directories": {
+    "output": "release"
+  },
+  "files": [
+    "dist/**/*",
+    "dist-electron/**/*",
+    "package.json"
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "dir",
+        "arch": ["x64"]
+      }
+    ],
+    "requestedExecutionLevel": "asInvoker"
+  },
+  "extraMetadata": {
+    "main": "dist-electron/main.js"
+  },
+  "compression": "normal",
+  "buildDependenciesFromSource": false,
+  "npmRebuild": false,
+  "forceCodeSigning": false
+}

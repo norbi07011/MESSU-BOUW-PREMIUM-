@@ -1,0 +1,184 @@
+@import 'tailwindcss';
+
+@import './styles/theme.css';
+@import './index.css';
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: rgb(229 231 235);
+  }
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 222.2 47.4% 11.2%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --destructive: 0 72.22% 50.59%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 222.2 47.4% 11.2%;
+  --chart-1: 12 76% 61%;
+  --chart-2: 173 58% 39%;
+  --chart-3: 197 37% 24%;
+  --chart-4: 43 74% 66%;
+  --chart-5: 27 87% 67%;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 210 40% 98%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+  --chart-1: 220 70% 50%;
+  --chart-2: 160 60% 45%;
+  --chart-3: 30 80% 55%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* SELECT DROPDOWN OVERRIDE - FORCE VISIBLE STYLES */
+[data-radix-select-content] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #374151 !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-radix-select-item] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+[data-radix-select-item]:hover,
+[data-radix-select-item][data-highlighted] {
+  background-color: #dbeafe !important;
+  color: #000000 !important;
+}
+
+[data-radix-select-trigger] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+/* Fallback dla data-slot selektorów */
+[data-slot="select-content"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #374151 !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-slot="select-item"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+[data-slot="select-item"]:hover,
+[data-slot="select-item"]:focus {
+  background-color: #dbeafe !important;
+  color: #000000 !important;
+}
+
+[data-slot="select-trigger"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+/* GLOBALNY OVERRIDE DLA WSZYSTKICH DROPDOWN'ÓW RADIX */
+body [data-radix-collection-item],
+body [data-radix-select-item],
+body [role="option"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+body [data-radix-collection-item]:hover,
+body [data-radix-select-item]:hover,
+body [role="option"]:hover {
+  background-color: #dbeafe !important;
+  color: #000000 !important;
+}
+
+body [data-radix-select-content],
+body [role="listbox"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #374151 !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* DIALOG/MODAL OVERRIDE - BIAŁE TŁO */
+[data-slot="dialog-content"],
+[data-radix-dialog-content],
+body [role="dialog"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+/* CARD OVERRIDE - BIAŁE TŁO */
+[data-slot="card"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+/* OGÓLNE OVERRIDE DLA WSZYSTKICH KOMPONENTÓW Z PROBLEMATYCZNYM TŁem */
+.bg-background,
+.bg-card,
+.bg-popover {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}

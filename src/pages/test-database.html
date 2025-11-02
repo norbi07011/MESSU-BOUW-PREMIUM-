@@ -1,0 +1,89 @@
+<![CDATA[<!DOCTYPE html>
+<html lang="pl">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <title>Test Database Connection</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .status { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background: #e6ffe6; color: #006600; }
+        .error { background: #ffe6e6; color: #660000; }
+        #results { white-space: pre-wrap; background: #f5f5f5; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Database Connection Test</h1>
+    <div id="status"></div>
+    <div id="results"></div>
+
+    <script>
+        async function runTests() {
+            const status = document.getElementById('status');
+            const results = document.getElementById('results');
+            let log = '';
+
+            function addLog(msg) {
+                log += msg + '\n';
+                results.textContent = log;
+            }
+
+            try {
+                // Check if we're in Electron
+                addLog('1. Checking Electron environment...');
+                if (!window.electronAPI) {
+                    throw new Error('Not running in Electron environment');
+                }
+                addLog('✓ Electron API detected\n');
+
+                // Test database connection
+                addLog('2. Testing database connection...');
+                const clients = await window.electronAPI.database.getClients();
+                addLog(`✓ Database connection successful`);
+                addLog(`Found ${clients.length} clients in database\n`);
+
+                // Try to create a test client
+                addLog('3. Testing client creation...');
+                const testClient = {
+                    name: 'Test Client ' + new Date().toISOString(),
+                    address: 'Test Address',
+                    country: 'NL',
+                    client_type: 'company',
+                    email: 'test@test.com'
+                };
+                
+                const createdClient = await window.electronAPI.database.createClient(testClient);
+                addLog(`✓ Test client created successfully`);
+                addLog(`Client ID: ${createdClient.id}\n`);
+
+                // Verify the client was created
+                addLog('4. Verifying client creation...');
+                const updatedClients = await window.electronAPI.database.getClients();
+                const found = updatedClients.find(c => c.id === createdClient.id);
+                if (found) {
+                    addLog(`✓ Client found in database`);
+                } else {
+                    throw new Error('Created client not found in database');
+                }
+
+                // Clean up
+                addLog('\n5. Cleaning up test data...');
+                await window.electronAPI.database.deleteClient(createdClient.id);
+                addLog('✓ Test client deleted');
+
+                status.className = 'status success';
+                status.textContent = '✅ All tests passed successfully!';
+
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = '❌ Test failed: ' + error.message;
+                addLog(`\nERROR: ${error.message}`);
+                console.error('Test error:', error);
+            }
+        }
+
+        // Run tests when page loads
+        runTests();
+    </script>
+</body>
+</html>]]>
