@@ -8,6 +8,7 @@ import { Invoice, Client } from '@/types';
 import { formatCurrency, formatDate } from '@/lib/invoice-utils';
 import { useMemo } from 'react';
 import { toast } from 'sonner';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface DashboardProps {
   onNavigate: (page: string) => void;
@@ -17,6 +18,7 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
   const { t, i18n } = useTranslation();
   const { invoices, loading: invoicesLoading } = useInvoices();
   const { clients, loading: clientsLoading } = useClients();
+  const isMobile = useIsMobile();
 
   // Download handlers (same as in App.tsx)
   const handleDownloadDesktop = async () => {
@@ -192,22 +194,24 @@ Wersja: 1.0.0 (Build: ${new Date().toISOString().split('T')[0]})`;
         />
       </div>
       
-      <div className="max-w-7xl mx-auto p-6 space-y-8 relative z-10">
-        {/* Modern Header */}
-        <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-blue-600 via-purple-600 to-indigo-700 p-8 text-white shadow-2xl">
+      <div className={`max-w-7xl mx-auto ${isMobile ? 'p-3 space-y-4' : 'p-6 space-y-8'} relative z-10`}>
+        {/* Modern Header - Responsive */}
+        <div className={`relative overflow-hidden ${isMobile ? 'rounded-2xl p-4' : 'rounded-3xl p-8'} bg-linear-to-r from-blue-600 via-purple-600 to-indigo-700 text-white shadow-2xl`}>
           <div className="absolute inset-0 bg-black/10"></div>
-          <div className="relative flex items-center justify-between">
+          <div className={`relative ${isMobile ? 'space-y-3' : 'flex items-center justify-between'}`}>
             <div>
-              <h1 className="text-4xl font-bold tracking-tight mb-2">
+              <h1 className={`${isMobile ? 'text-2xl' : 'text-4xl'} font-bold tracking-tight mb-2`}>
                 🎯 {t('dashboard.title')}
               </h1>
-              <p className="text-blue-100 text-lg">Witaj w nowoczesnym systemie fakturowania</p>
+              <p className={`text-blue-100 ${isMobile ? 'text-sm' : 'text-lg'}`}>
+                {isMobile ? 'System fakturowania' : 'Witaj w nowoczesnym systemie fakturowania'}
+              </p>
             </div>
             <button 
               onClick={() => onNavigate('invoices-new')}
-              className="px-8 py-4 bg-linear-to-r from-emerald-500 to-green-600 text-white rounded-2xl hover:from-emerald-600 hover:to-green-700 transition-all duration-300 transform hover:scale-105 font-bold text-lg shadow-xl"
+              className={`${isMobile ? 'w-full px-4 py-3 text-base' : 'px-8 py-4 text-lg'} bg-linear-to-r from-emerald-500 to-green-600 text-white rounded-2xl hover:from-emerald-600 hover:to-green-700 transition-all duration-300 transform hover:scale-105 font-bold shadow-xl`}
             >
-              <Plus className="inline mr-2" size={24} />
+              <Plus className="inline mr-2" size={isMobile ? 20 : 24} />
               {t('dashboard.newInvoice')}
             </button>
           </div>
@@ -217,22 +221,24 @@ Wersja: 1.0.0 (Build: ${new Date().toISOString().split('T')[0]})`;
         </div>
 
         {/* Modern Download Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="relative group overflow-hidden rounded-2xl bg-linear-to-br from-blue-500 to-blue-600 p-6 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+        <div className={`grid ${isMobile ? 'grid-cols-1 gap-4' : 'grid-cols-1 lg:grid-cols-2 gap-6'}`}>
+          <div className={`relative group overflow-hidden ${isMobile ? 'rounded-xl p-4' : 'rounded-2xl p-6'} bg-linear-to-br from-blue-500 to-blue-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105`}>
             <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent"></div>
             <div className="relative">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
-                  <Download size={32} className="text-white" />
+              <div className={`flex items-center gap-${isMobile ? '3' : '4'} mb-${isMobile ? '3' : '4'}`}>
+                <div className={`${isMobile ? 'p-2' : 'p-3'} bg-white/20 backdrop-blur-sm rounded-xl`}>
+                  <Download size={isMobile ? 24 : 32} className="text-white" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold">💻 Pobierz na komputer</h3>
-                  <p className="text-blue-100">Aplikacja desktop Windows z instalatorem</p>
+                  <h3 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold`}>💻 Pobierz na komputer</h3>
+                  <p className={`text-blue-100 ${isMobile ? 'text-xs' : 'text-base'}`}>
+                    {isMobile ? 'Desktop Windows' : 'Aplikacja desktop Windows z instalatorem'}
+                  </p>
                 </div>
               </div>
               <button
                 onClick={handleDownloadDesktop}
-                className="w-full py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl hover:bg-white/30 transition-all duration-300 font-semibold"
+                className={`w-full ${isMobile ? 'py-2 text-sm' : 'py-3'} bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl hover:bg-white/30 transition-all duration-300 font-semibold`}
               >
                 Pobierz teraz
               </button>
@@ -240,21 +246,23 @@ Wersja: 1.0.0 (Build: ${new Date().toISOString().split('T')[0]})`;
             <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
           </div>
 
-          <div className="relative group overflow-hidden rounded-2xl bg-linear-to-br from-green-500 to-green-600 p-6 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+          <div className={`relative group overflow-hidden ${isMobile ? 'rounded-xl p-4' : 'rounded-2xl p-6'} bg-linear-to-br from-green-500 to-green-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105`}>
             <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent"></div>
             <div className="relative">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
-                  <DeviceMobile size={32} className="text-white" />
+              <div className={`flex items-center gap-${isMobile ? '3' : '4'} mb-${isMobile ? '3' : '4'}`}>
+                <div className={`${isMobile ? 'p-2' : 'p-3'} bg-white/20 backdrop-blur-sm rounded-xl`}>
+                  <DeviceMobile size={isMobile ? 24 : 32} className="text-white" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold">📱 Pobierz na telefon</h3>
-                  <p className="text-green-100">Skopiuj adres i otwórz w przeglądarce telefonu</p>
+                  <h3 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold`}>📱 Pobierz na telefon</h3>
+                  <p className={`text-green-100 ${isMobile ? 'text-xs' : 'text-base'}`}>
+                    {isMobile ? 'Skopiuj adres' : 'Skopiuj adres i otwórz w przeglądarce telefonu'}
+                  </p>
                 </div>
               </div>
               <button
                 onClick={handleDownloadMobile}
-                className="w-full py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl hover:bg-white/30 transition-all duration-300 font-semibold"
+                className={`w-full ${isMobile ? 'py-2 text-sm' : 'py-3'} bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl hover:bg-white/30 transition-all duration-300 font-semibold`}
               >
                 Skopiuj adres
               </button>
@@ -264,58 +272,58 @@ Wersja: 1.0.0 (Build: ${new Date().toISOString().split('T')[0]})`;
         </div>
 
         {/* Modern Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="group relative overflow-hidden rounded-2xl bg-white/80 backdrop-blur-sm border border-white/30 p-6 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+        <div className={`grid ${isMobile ? 'grid-cols-2 gap-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'}`}>
+          <div className={`group relative overflow-hidden ${isMobile ? 'rounded-xl p-4' : 'rounded-2xl p-6'} bg-white/80 backdrop-blur-sm border border-white/30 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105`}>
             <div className="absolute inset-0 bg-linear-to-br from-red-500/10 to-red-600/10"></div>
-            <div className="relative flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-gray-600">{t('dashboard.unpaid')}</h3>
-              <div className="p-2 bg-red-100 rounded-xl">
-                <FileText className="text-red-600" size={20} />
+            <div className={`relative flex items-center justify-between ${isMobile ? 'mb-2' : 'mb-4'}`}>
+              <h3 className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-gray-600`}>{t('dashboard.unpaid')}</h3>
+              <div className={`${isMobile ? 'p-1' : 'p-2'} bg-red-100 rounded-xl`}>
+                <FileText className="text-red-600" size={isMobile ? 16 : 20} />
               </div>
             </div>
-            <div className="relative text-3xl font-bold text-gray-900 font-mono">
+            <div className={`relative ${isMobile ? 'text-lg' : 'text-3xl'} font-bold text-gray-900 font-mono`}>
               {formatCurrency(stats.unpaid, i18n.language)}
             </div>
             <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-red-200/30 rounded-full blur-lg"></div>
           </div>
 
-          <div className="group relative overflow-hidden rounded-2xl bg-white/80 backdrop-blur-sm border border-white/30 p-6 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+          <div className={`group relative overflow-hidden ${isMobile ? 'rounded-xl p-4' : 'rounded-2xl p-6'} bg-white/80 backdrop-blur-sm border border-white/30 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105`}>
             <div className="absolute inset-0 bg-linear-to-br from-blue-500/10 to-blue-600/10"></div>
-            <div className="relative flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-gray-600">{t('dashboard.thisMonth')}</h3>
-              <div className="p-2 bg-blue-100 rounded-xl">
-                <ChartBar className="text-blue-600" size={20} />
+            <div className={`relative flex items-center justify-between ${isMobile ? 'mb-2' : 'mb-4'}`}>
+              <h3 className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-gray-600`}>{t('dashboard.thisMonth')}</h3>
+              <div className={`${isMobile ? 'p-1' : 'p-2'} bg-blue-100 rounded-xl`}>
+                <ChartBar className="text-blue-600" size={isMobile ? 16 : 20} />
               </div>
             </div>
-            <div className="relative text-3xl font-bold text-gray-900 font-mono">
+            <div className={`relative ${isMobile ? 'text-lg' : 'text-3xl'} font-bold text-gray-900 font-mono`}>
               {formatCurrency(stats.thisMonth, i18n.language)}
             </div>
             <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-blue-200/30 rounded-full blur-lg"></div>
           </div>
 
-          <div className="group relative overflow-hidden rounded-2xl bg-white/80 backdrop-blur-sm border border-white/30 p-6 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+          <div className={`group relative overflow-hidden ${isMobile ? 'rounded-xl p-4' : 'rounded-2xl p-6'} bg-white/80 backdrop-blur-sm border border-white/30 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105`}>
             <div className="absolute inset-0 bg-linear-to-br from-green-500/10 to-green-600/10"></div>
-            <div className="relative flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-gray-600">{t('dashboard.thisYear')}</h3>
-              <div className="p-2 bg-green-100 rounded-xl">
-                <ChartBar className="text-green-600" size={20} />
+            <div className={`relative flex items-center justify-between ${isMobile ? 'mb-2' : 'mb-4'}`}>
+              <h3 className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-gray-600`}>{t('dashboard.thisYear')}</h3>
+              <div className={`${isMobile ? 'p-1' : 'p-2'} bg-green-100 rounded-xl`}>
+                <ChartBar className="text-green-600" size={isMobile ? 16 : 20} />
               </div>
             </div>
-            <div className="relative text-3xl font-bold text-gray-900 font-mono">
+            <div className={`relative ${isMobile ? 'text-lg' : 'text-3xl'} font-bold text-gray-900 font-mono`}>
               {formatCurrency(stats.thisYear, i18n.language)}
             </div>
             <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-green-200/30 rounded-full blur-lg"></div>
           </div>
 
-          <div className="group relative overflow-hidden rounded-2xl bg-white/80 backdrop-blur-sm border border-white/30 p-6 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+          <div className={`group relative overflow-hidden ${isMobile ? 'rounded-xl p-4' : 'rounded-2xl p-6'} bg-white/80 backdrop-blur-sm border border-white/30 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105`}>
             <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 to-purple-600/10"></div>
-            <div className="relative flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-gray-600">{t('dashboard.totalInvoices')}</h3>
-              <div className="p-2 bg-purple-100 rounded-xl">
-                <FileText className="text-purple-600" size={20} />
+            <div className={`relative flex items-center justify-between ${isMobile ? 'mb-2' : 'mb-4'}`}>
+              <h3 className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-gray-600`}>{t('dashboard.totalInvoices')}</h3>
+              <div className={`${isMobile ? 'p-1' : 'p-2'} bg-purple-100 rounded-xl`}>
+                <FileText className="text-purple-600" size={isMobile ? 16 : 20} />
               </div>
             </div>
-            <div className="relative text-3xl font-bold text-gray-900 font-mono">
+            <div className={`relative ${isMobile ? 'text-lg' : 'text-3xl'} font-bold text-gray-900 font-mono`}>
               {stats.totalInvoices}
             </div>
             <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-purple-200/30 rounded-full blur-lg"></div>
@@ -323,63 +331,63 @@ Wersja: 1.0.0 (Build: ${new Date().toISOString().split('T')[0]})`;
         </div>
 
         {/* Modern Recent Invoices */}
-        <div className="relative overflow-hidden rounded-2xl bg-white/80 backdrop-blur-sm border border-white/30 shadow-xl">
+        <div className={`relative overflow-hidden ${isMobile ? 'rounded-xl' : 'rounded-2xl'} bg-white/80 backdrop-blur-sm border border-white/30 shadow-xl`}>
           <div className="absolute inset-0 bg-linear-to-br from-slate-500/5 to-gray-500/5"></div>
-          <div className="relative p-6">
-            <div className="flex items-center justify-between mb-6">
+          <div className={`relative ${isMobile ? 'p-4' : 'p-6'}`}>
+            <div className={`flex items-center justify-between ${isMobile ? 'mb-4' : 'mb-6'}`}>
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">{t('dashboard.recentInvoices')}</h2>
-                <p className="text-gray-600">Ostatnie 5 faktur w systemie</p>
+                <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-gray-900`}>{t('dashboard.recentInvoices')}</h2>
+                {!isMobile && <p className="text-gray-600">Ostatnie 5 faktur w systemie</p>}
               </div>
-              <div className="p-3 bg-slate-100 rounded-xl">
-                <FileText className="text-slate-600" size={24} />
+              <div className={`${isMobile ? 'p-2' : 'p-3'} bg-slate-100 rounded-xl`}>
+                <FileText className="text-slate-600" size={isMobile ? 20 : 24} />
               </div>
             </div>
             
             {recentInvoices.length === 0 ? (
               <div className="text-center py-16">
-                <div className="p-6 bg-linear-to-br from-blue-100 to-indigo-100 rounded-3xl inline-block mb-6">
-                  <FileText className="text-blue-600" size={64} />
+                <div className={`${isMobile ? 'p-4' : 'p-6'} bg-linear-to-br from-blue-100 to-indigo-100 rounded-3xl inline-block mb-6`}>
+                  <FileText className="text-blue-600" size={isMobile ? 48 : 64} />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">{t('dashboard.noInvoices')}</h3>
-                <p className="text-gray-600 mb-6 text-lg">{t('dashboard.createFirst')}</p>
+                <h3 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-gray-900 mb-3`}>{t('dashboard.noInvoices')}</h3>
+                <p className={`text-gray-600 mb-6 ${isMobile ? 'text-base' : 'text-lg'}`}>{t('dashboard.createFirst')}</p>
                 <button 
                   onClick={() => onNavigate('invoices-new')}
-                  className="px-8 py-4 bg-linear-to-r from-blue-600 to-purple-600 text-white rounded-2xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 font-bold text-lg shadow-xl"
+                  className={`${isMobile ? 'px-6 py-3 text-base' : 'px-8 py-4 text-lg'} bg-linear-to-r from-blue-600 to-purple-600 text-white rounded-2xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 font-bold shadow-xl`}
                 >
                   <Plus className="inline mr-2" size={20} />
                   {t('dashboard.newInvoice')}
                 </button>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className={isMobile ? 'space-y-3' : 'space-y-4'}>
                 {recentInvoices.map((invoice) => {
                   const client = clients?.find(c => c.id === invoice.client_id);
                   return (
                     <div
                       key={invoice.id}
-                      className="group relative overflow-hidden rounded-xl bg-white/60 backdrop-blur-sm border border-white/50 p-6 hover:bg-white/80 hover:shadow-lg transition-all duration-300 cursor-pointer transform hover:scale-[1.02]"
+                      className={`group relative overflow-hidden ${isMobile ? 'rounded-lg p-4' : 'rounded-xl p-6'} bg-white/60 backdrop-blur-sm border border-white/50 hover:bg-white/80 hover:shadow-lg transition-all duration-300 cursor-pointer transform hover:scale-[1.02]`}
                       onClick={() => onNavigate(`invoices-${invoice.id}`)}
                     >
                       <div className="absolute inset-0 bg-linear-to-r from-blue-500/5 to-purple-500/5 group-hover:from-blue-500/10 group-hover:to-purple-500/10 transition-all duration-300"></div>
-                      <div className="relative flex items-center justify-between">
+                      <div className={`relative ${isMobile ? 'space-y-2' : 'flex items-center justify-between'}`}>
                         <div className="flex-1">
-                          <div className="font-mono font-bold text-lg text-gray-900 mb-1">
+                          <div className={`font-mono font-bold ${isMobile ? 'text-base' : 'text-lg'} text-gray-900 mb-1`}>
                             {invoice.invoice_number}
                           </div>
-                          <div className="text-gray-600 font-medium">
+                          <div className={`text-gray-600 ${isMobile ? 'text-sm' : 'font-medium'}`}>
                             {client?.name || 'Unknown'}
                           </div>
                         </div>
-                        <div className="text-right mr-6">
-                          <div className="font-mono font-bold text-xl text-gray-900">
+                        <div className={`${isMobile ? 'flex items-center justify-between' : 'text-right mr-6'}`}>
+                          <div className={`font-mono font-bold ${isMobile ? 'text-lg' : 'text-xl'} text-gray-900`}>
                             {formatCurrency(invoice.total_gross, i18n.language)}
                           </div>
-                          <div className="text-gray-600">
+                          <div className={`text-gray-600 ${isMobile ? 'text-sm' : ''}`}>
                             {formatDate(invoice.issue_date, i18n.language)}
                           </div>
                         </div>
-                        <div className="shrink-0">
+                        <div className={isMobile ? 'mt-2' : 'shrink-0'}>
                           {getStatusBadge(invoice.status)}
                         </div>
                       </div>

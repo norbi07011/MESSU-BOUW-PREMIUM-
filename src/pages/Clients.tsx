@@ -10,9 +10,11 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, PencilSimple, Trash, Users, User, Buildings } from '@phosphor-icons/react';
+import { Plus, PencilSimple, Trash, Users, User, Buildings, DotsThreeVertical } from '@phosphor-icons/react';
 import { Client } from '@/types';
 import { toast } from 'sonner';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 // Słownik krajów
 const COUNTRIES = {
@@ -35,6 +37,7 @@ export default function Clients() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const isMobile = useIsMobile();
 
   // Debug logs
   console.log('Clients component rendering with:', { 
@@ -157,22 +160,22 @@ export default function Clients() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <div className="max-w-7xl mx-auto p-6 space-y-8">
-        {/* Modern Header */}
-        <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-emerald-600 via-teal-600 to-cyan-700 p-8 text-white shadow-2xl">
+      <div className={`max-w-7xl mx-auto ${isMobile ? 'p-3 space-y-4' : 'p-6 space-y-8'}`}>
+        {/* Modern Header - Responsive */}
+        <div className={`relative overflow-hidden ${isMobile ? 'rounded-2xl p-4' : 'rounded-3xl p-8'} bg-linear-to-r from-emerald-600 via-teal-600 to-cyan-700 text-white shadow-2xl`}>
           <div className="absolute inset-0 bg-black/10"></div>
-          <div className="relative flex items-center justify-between">
+          <div className={`relative ${isMobile ? 'space-y-3' : 'flex items-center justify-between'}`}>
             <div>
-              <h1 className="text-4xl font-bold tracking-tight mb-2">
+              <h1 className={`${isMobile ? 'text-2xl' : 'text-4xl'} font-bold tracking-tight mb-2`}>
                 👥 {t('clients.title')}
               </h1>
-              <p className="text-teal-100 text-lg">Zarządzaj bazą danych klientów</p>
+              {!isMobile && <p className="text-teal-100 text-lg">Zarządzaj bazą danych klientów</p>}
             </div>
             <button
               onClick={() => handleOpenDialog()}
-              className="px-8 py-4 bg-linear-to-r from-orange-500 to-red-600 text-white rounded-2xl hover:from-orange-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105 font-bold text-lg shadow-xl"
+              className={`${isMobile ? 'w-full px-4 py-3 text-base' : 'px-8 py-4 text-lg'} bg-linear-to-r from-orange-500 to-red-600 text-white rounded-2xl hover:from-orange-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105 font-bold shadow-xl`}
             >
-              <Plus className="inline mr-2" size={24} />
+              <Plus className="inline mr-2" size={isMobile ? 20 : 24} />
               {t('clients.newClient')}
             </button>
           </div>
@@ -182,117 +185,178 @@ export default function Clients() {
         </div>
 
         {/* Modern Clients Card */}
-        <div className="relative overflow-hidden rounded-2xl bg-white/80 backdrop-blur-sm border border-white/30 shadow-2xl">
+        <div className={`relative overflow-hidden ${isMobile ? 'rounded-xl' : 'rounded-2xl'} bg-white/80 backdrop-blur-sm border border-white/30 shadow-2xl`}>
           <div className="absolute inset-0 bg-linear-to-br from-slate-500/5 to-gray-500/5"></div>
-          <div className="relative p-6">
-            <div className="flex items-center justify-between mb-6">
+          <div className={`relative ${isMobile ? 'p-4' : 'p-6'}`}>
+            <div className={`flex items-center justify-between ${isMobile ? 'mb-4' : 'mb-6'}`}>
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">{t('clients.title')}</h2>
-                <p className="text-gray-600">Wszyscy klienci w systemie</p>
+                <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-gray-900`}>{t('clients.title')}</h2>
+                {!isMobile && <p className="text-gray-600">Wszyscy klienci w systemie</p>}
               </div>
-              <div className="p-3 bg-teal-100 rounded-xl">
-                <Users className="text-teal-600" size={24} />
+              <div className={`${isMobile ? 'p-2' : 'p-3'} bg-teal-100 rounded-xl`}>
+                <Users className="text-teal-600" size={isMobile ? 20 : 24} />
               </div>
             </div>
 
             {/* Modern Search */}
-            <div className="mb-6">
+            <div className={isMobile ? 'mb-4' : 'mb-6'}>
               <div className="relative">
                 <Input
                   placeholder={t('clients.search')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full max-w-md bg-white/60 backdrop-blur-sm border-2 border-teal-200 focus:border-teal-500 rounded-xl"
+                  className={`${isMobile ? 'w-full' : 'w-full max-w-md'} bg-white/60 backdrop-blur-sm border-2 border-teal-200 focus:border-teal-500 rounded-xl`}
                 />
               </div>
             </div>
 
             {loading ? (
               <div className="text-center py-16">
-                <div className="p-6 bg-linear-to-br from-teal-100 to-cyan-100 rounded-3xl inline-block mb-6 animate-pulse">
-                  <Users className="text-teal-600" size={64} />
+                <div className={`${isMobile ? 'p-4' : 'p-6'} bg-linear-to-br from-teal-100 to-cyan-100 rounded-3xl inline-block mb-6 animate-pulse`}>
+                  <Users className="text-teal-600" size={isMobile ? 48 : 64} />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">Ładowanie klientów...</h3>
+                <h3 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-gray-900 mb-3`}>Ładowanie klientów...</h3>
               </div>
             ) : filteredClients.length === 0 ? (
               <div className="text-center py-16">
-                <div className="p-6 bg-linear-to-br from-teal-100 to-cyan-100 rounded-3xl inline-block mb-6">
-                  <Users className="text-teal-600" size={64} />
+                <div className={`${isMobile ? 'p-4' : 'p-6'} bg-linear-to-br from-teal-100 to-cyan-100 rounded-3xl inline-block mb-6`}>
+                  <Users className="text-teal-600" size={isMobile ? 48 : 64} />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">{t('clients.noClients')}</h3>
-                <p className="text-gray-600 mb-6 text-lg">{t('clients.addFirst')}</p>
+                <h3 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-gray-900 mb-3`}>{t('clients.noClients')}</h3>
+                <p className={`text-gray-600 mb-6 ${isMobile ? 'text-base' : 'text-lg'}`}>{t('clients.addFirst')}</p>
                 <button
                   onClick={() => handleOpenDialog()}
-                  className="px-8 py-4 bg-linear-to-r from-teal-600 to-cyan-600 text-white rounded-2xl hover:from-teal-700 hover:to-cyan-700 transition-all duration-300 transform hover:scale-105 font-bold text-lg shadow-xl"
+                  className={`${isMobile ? 'px-6 py-3 text-base' : 'px-8 py-4 text-lg'} bg-linear-to-r from-teal-600 to-cyan-600 text-white rounded-2xl hover:from-teal-700 hover:to-cyan-700 transition-all duration-300 transform hover:scale-105 font-bold shadow-xl`}
                 >
                   <Plus className="inline mr-2" size={20} />
                   {t('clients.newClient')}
                 </button>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <div className="min-w-full">
-                  {/* Modern Table Header */}
-                  <div className="grid grid-cols-7 gap-4 p-4 bg-linear-to-r from-slate-100 to-gray-100 rounded-t-xl border-b border-gray-200">
-                    <div className="font-bold text-gray-700">{t('clients.name')}</div>
-                    <div className="font-bold text-gray-700">{t('clients.clientType')}</div>
-                    <div className="font-bold text-gray-700">{t('clients.country')}</div>
-                    <div className="font-bold text-gray-700">{t('clients.email')}</div>
-                    <div className="font-bold text-gray-700">{t('clients.phone')}</div>
-                    <div className="font-bold text-gray-700">BTW/NIP</div>
-                    <div className="font-bold text-gray-700 text-right">{t('clients.actions')}</div>
-                  </div>
-
-                  {/* Modern Table Body */}
-                  <div className="space-y-2 p-2">
+              <>
+                {/* MOBILE VIEW - Cards */}
+                {isMobile ? (
+                  <div className="space-y-3">
                     {filteredClients.map((client) => (
                       <div
                         key={client.id}
-                        className="group relative overflow-hidden rounded-xl bg-white/60 backdrop-blur-sm border border-white/50 p-4 hover:bg-white/80 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.01]"
+                        className="group relative overflow-hidden rounded-xl bg-white/80 backdrop-blur-sm border border-white/50 p-4 hover:bg-white/90 hover:shadow-lg transition-all duration-300"
                       >
                         <div className="absolute inset-0 bg-linear-to-r from-teal-500/5 to-cyan-500/5 group-hover:from-teal-500/10 group-hover:to-cyan-500/10 transition-all duration-300"></div>
-                        <div className="relative grid grid-cols-7 gap-4 items-center">
-                          <div className="font-bold text-gray-900">{client.name}</div>
-                          <div>
-                            <Badge variant={client.client_type === 'company' ? 'default' : 'secondary'} className="bg-teal-100 text-teal-800">
-                              {client.client_type === 'company' ? (
-                                <><Buildings className="mr-1" size={14} /> Firma</>
-                              ) : (
-                                <><User className="mr-1" size={14} /> Prywatny</>
-                              )}
-                            </Badge>
-                          </div>
-                          <div className="font-medium text-gray-800">{COUNTRIES[client.country as keyof typeof COUNTRIES] || client.country || 'PL'}</div>
-                          <div className="text-gray-600">{client.email}</div>
-                          <div className="text-gray-600">{client.phone}</div>
-                          <div className="font-mono text-sm text-gray-800">
-                            {client.country === 'PL' && client.nip_number ? client.nip_number : client.vat_number}
-                          </div>
-                          <div className="text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <button
-                                onClick={() => handleOpenDialog(client)}
-                                className="p-2 bg-teal-100 hover:bg-teal-200 rounded-xl transition-colors duration-200"
-                                title="Edit client"
-                              >
-                                <PencilSimple className="text-teal-600" size={18} />
-                              </button>
-                              <button
-                                onClick={() => handleDelete(client.id)}
-                                className="p-2 bg-red-100 hover:bg-red-200 rounded-xl transition-colors duration-200"
-                                title="Delete client"
-                              >
-                                <Trash className="text-red-600" size={18} />
-                              </button>
+                        <div className="relative space-y-3">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="font-bold text-lg text-gray-900 mb-1">{client.name}</div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <Badge variant={client.client_type === 'company' ? 'default' : 'secondary'} className="bg-teal-100 text-teal-800 text-xs">
+                                  {client.client_type === 'company' ? (
+                                    <><Buildings className="mr-1 pointer-events-none" size={12} /> Firma</>
+                                  ) : (
+                                    <><User className="mr-1 pointer-events-none" size={12} /> Prywatny</>
+                                  )}
+                                </Badge>
+                                <span className="text-sm text-gray-600">{COUNTRIES[client.country as keyof typeof COUNTRIES] || client.country || 'PL'}</span>
+                              </div>
                             </div>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Menu">
+                                  <DotsThreeVertical className="pointer-events-none" size={20} weight="bold" />
+                                </button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="w-48">
+                                <DropdownMenuItem onClick={() => handleOpenDialog(client)}>
+                                  <PencilSimple className="mr-2 pointer-events-none" size={16} />
+                                  Edytuj
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleDelete(client.id)} className="text-red-600">
+                                  <Trash className="mr-2 pointer-events-none" size={16} />
+                                  Usuń
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
+                          <div className="space-y-1 text-sm">
+                            <div className="text-gray-600">{client.email}</div>
+                            <div className="text-gray-600">{client.phone}</div>
+                            {(client.nip_number || client.vat_number) && (
+                              <div className="font-mono text-xs text-gray-700 bg-gray-100 px-2 py-1 rounded inline-block">
+                                {client.country === 'PL' && client.nip_number ? client.nip_number : client.vat_number}
+                              </div>
+                            )}
                           </div>
                         </div>
-                        <div className="absolute -bottom-2 -right-2 w-20 h-20 bg-teal-200/20 rounded-full blur-xl group-hover:bg-cyan-200/30 transition-all duration-300"></div>
+                        <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-teal-200/20 rounded-full blur-lg group-hover:bg-cyan-200/30 transition-all duration-300"></div>
                       </div>
                     ))}
                   </div>
-                </div>
-              </div>
+                ) : (
+                  /* DESKTOP VIEW - Table */
+                  <div className="overflow-x-auto">
+                    <div className="min-w-full">
+                      {/* Modern Table Header */}
+                      <div className="grid grid-cols-7 gap-4 p-4 bg-linear-to-r from-slate-100 to-gray-100 rounded-t-xl border-b border-gray-200">
+                        <div className="font-bold text-gray-700">{t('clients.name')}</div>
+                        <div className="font-bold text-gray-700">{t('clients.clientType')}</div>
+                        <div className="font-bold text-gray-700">{t('clients.country')}</div>
+                        <div className="font-bold text-gray-700">{t('clients.email')}</div>
+                        <div className="font-bold text-gray-700">{t('clients.phone')}</div>
+                        <div className="font-bold text-gray-700">BTW/NIP</div>
+                        <div className="font-bold text-gray-700 text-right">{t('clients.actions')}</div>
+                      </div>
+
+                      {/* Modern Table Body */}
+                      <div className="space-y-2 p-2">
+                        {filteredClients.map((client) => (
+                          <div
+                            key={client.id}
+                            className="group relative overflow-hidden rounded-xl bg-white/60 backdrop-blur-sm border border-white/50 p-4 hover:bg-white/80 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.01]"
+                          >
+                            <div className="absolute inset-0 bg-linear-to-r from-teal-500/5 to-cyan-500/5 group-hover:from-teal-500/10 group-hover:to-cyan-500/10 transition-all duration-300"></div>
+                            <div className="relative grid grid-cols-7 gap-4 items-center">
+                              <div className="font-bold text-gray-900">{client.name}</div>
+                              <div>
+                                <Badge variant={client.client_type === 'company' ? 'default' : 'secondary'} className="bg-teal-100 text-teal-800">
+                                  {client.client_type === 'company' ? (
+                                    <><Buildings className="mr-1 pointer-events-none" size={14} /> Firma</>
+                                  ) : (
+                                    <><User className="mr-1 pointer-events-none" size={14} /> Prywatny</>
+                                  )}
+                                </Badge>
+                              </div>
+                              <div className="font-medium text-gray-800">{COUNTRIES[client.country as keyof typeof COUNTRIES] || client.country || 'PL'}</div>
+                              <div className="text-gray-600">{client.email}</div>
+                              <div className="text-gray-600">{client.phone}</div>
+                              <div className="font-mono text-sm text-gray-800">
+                                {client.country === 'PL' && client.nip_number ? client.nip_number : client.vat_number}
+                              </div>
+                              <div className="text-right">
+                                <div className="flex items-center justify-end gap-2">
+                                  <button
+                                    onClick={() => handleOpenDialog(client)}
+                                    className="p-2 bg-teal-100 hover:bg-teal-200 rounded-xl transition-colors duration-200"
+                                    title="Edit client"
+                                  >
+                                    <PencilSimple className="text-teal-600 pointer-events-none" size={18} />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDelete(client.id)}
+                                    className="p-2 bg-red-100 hover:bg-red-200 rounded-xl transition-colors duration-200"
+                                    title="Delete client"
+                                  >
+                                    <Trash className="text-red-600 pointer-events-none" size={18} />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="absolute -bottom-2 -right-2 w-20 h-20 bg-teal-200/20 rounded-full blur-xl group-hover:bg-cyan-200/30 transition-all duration-300"></div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
